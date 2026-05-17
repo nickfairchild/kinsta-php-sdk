@@ -2,11 +2,9 @@
 
 namespace Nickfairchild\KinstaPhpSdk;
 
+use Nickfairchild\KinstaPhpSdk\Concerns\SupportsCompanyEndpoints;
 use Nickfairchild\KinstaPhpSdk\Concerns\SupportsUtilitiesEndpoints;
 use Nickfairchild\KinstaPhpSdk\Exceptions\KinstaException;
-use Nickfairchild\KinstaPhpSdk\Resources\CompanyResource;
-use Nickfairchild\KinstaPhpSdk\Resources\DomainsResource;
-use Nickfairchild\KinstaPhpSdk\Resources\UtilitiesResource;
 use Saloon\Http\Auth\TokenAuthenticator;
 use Saloon\Http\Connector;
 use Saloon\Http\Request;
@@ -22,9 +20,13 @@ class Kinsta extends Connector implements HasPagination
 {
     use AcceptsJson;
     use AlwaysThrowOnErrors;
+    use SupportsCompanyEndpoints;
     use SupportsUtilitiesEndpoints;
 
-    public function __construct(protected readonly string $apiKey) {}
+    public function __construct(
+        protected readonly string $apiKey,
+        protected readonly string $companyId,
+    ) {}
 
     public function getRequestException(Response $response, ?Throwable $senderException): ?Throwable
     {
@@ -70,19 +72,4 @@ class Kinsta extends Connector implements HasPagination
             }
         };
     }
-
-    //    public function company($companyId): CompanyResource
-    //    {
-    //        return new CompanyResource($this, $companyId);
-    //    }
-
-    //    public function domains(): DomainsResource
-    //    {
-    //        return new DomainsResource($this);
-    //    }
-
-    //    public function utilities(): UtilitiesResource
-    //    {
-    //        return new UtilitiesResource($this);
-    //    }
 }

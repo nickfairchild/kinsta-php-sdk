@@ -12,7 +12,7 @@ function kinstaMock(): Kinsta
 {
     MockClient::destroyGlobal();
 
-    return new Kinsta('fake-token');
+    return new Kinsta('fake-token', 'company-id');
 }
 
 function markTestComplete()
