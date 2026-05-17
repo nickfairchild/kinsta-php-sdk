@@ -3,6 +3,7 @@
 namespace Nickfairchild\KinstaPhpSdk;
 
 use Nickfairchild\KinstaPhpSdk\Concerns\SupportsCompanyEndpoints;
+use Nickfairchild\KinstaPhpSdk\Concerns\SupportsDomainEndpoints;
 use Nickfairchild\KinstaPhpSdk\Concerns\SupportsUtilitiesEndpoints;
 use Nickfairchild\KinstaPhpSdk\Exceptions\KinstaException;
 use Saloon\Http\Auth\TokenAuthenticator;
@@ -21,6 +22,7 @@ class Kinsta extends Connector implements HasPagination
     use AcceptsJson;
     use AlwaysThrowOnErrors;
     use SupportsCompanyEndpoints;
+    use SupportsDomainEndpoints;
     use SupportsUtilitiesEndpoints;
 
     public function __construct(

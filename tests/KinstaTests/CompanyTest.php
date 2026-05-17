@@ -140,7 +140,7 @@ it('can get a list of activity logs', function () {
     }
 });
 
-//it('can get a list of activity logs with filters', function () {});
+// it('can get a list of activity logs with filters', function () {});
 
 it('can get a list of plugins', function () {
     MockClient::global([
