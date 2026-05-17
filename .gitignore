@@ -1,0 +1,9 @@
+/vendor
+/.idea
+composer.lock
+/phpunit.xml
+.phpunit.cache
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
