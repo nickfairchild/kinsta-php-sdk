@@ -16,7 +16,7 @@
         "php": "^8.2",
         "saloonphp/saloon": "^4.0",
         "saloonphp/pagination-plugin": "^2.0",
-        "symfony/var-dumper": "^8.0"
+        "symfony/var-dumper": "^7.4|^8.0"
     },
     "require-dev": {
         "jonpurvis/lawman": "^4.2",
