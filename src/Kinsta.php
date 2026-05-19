@@ -2,9 +2,11 @@
 
 namespace Nickfairchild\KinstaPhpSdk;
 
+use Nickfairchild\KinstaPhpSdk\Concerns\SupportsBackupEndpoints;
 use Nickfairchild\KinstaPhpSdk\Concerns\SupportsCompanyEndpoints;
 use Nickfairchild\KinstaPhpSdk\Concerns\SupportsDomainEndpoints;
 use Nickfairchild\KinstaPhpSdk\Concerns\SupportsUtilitiesEndpoints;
+use Nickfairchild\KinstaPhpSdk\Concerns\SupportsWordPressSitesEndpoints;
 use Nickfairchild\KinstaPhpSdk\Exceptions\KinstaException;
 use Saloon\Http\Auth\TokenAuthenticator;
 use Saloon\Http\Connector;
@@ -21,9 +23,11 @@ class Kinsta extends Connector implements HasPagination
 {
     use AcceptsJson;
     use AlwaysThrowOnErrors;
+    use SupportsBackupEndpoints;
     use SupportsCompanyEndpoints;
     use SupportsDomainEndpoints;
     use SupportsUtilitiesEndpoints;
+    use SupportsWordPressSitesEndpoints;
 
     public function __construct(
         protected readonly string $apiKey,
