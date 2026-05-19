@@ -13,7 +13,7 @@
         }
     ],
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "saloonphp/saloon": "^4.0",
         "saloonphp/pagination-plugin": "^2.0",
         "symfony/var-dumper": "^7.4|^8.0"
@@ -22,6 +22,7 @@
         "jonpurvis/lawman": "^4.2",
         "laravel/pint": "^1.29",
         "pestphp/pest": "^4.7",
+        "pestphp/pest-plugin-type-coverage": "^4.0",
         "phpstan/phpstan": "^2.1"
     },
     "autoload": {
@@ -38,7 +39,8 @@
         "format": "vendor/bin/pint",
         "test": "vendor/bin/pest -p",
         "analyse": "vendor/bin/phpstan analyse",
-        "baseline": "vendor/bin/phpstan analyse --generate-baseline"
+        "baseline": "vendor/bin/phpstan analyse --generate-baseline",
+        "type-coverage": "vendor/bin/pest --type-coverage --compact"
     },
     "config": {
         "sort-packages": true,

@@ -2,7 +2,7 @@
 
 namespace Nickfairchild\KinstaPhpSdk\Dto\Hosting\Sites;
 
-class Site
+readonly class Site
 {
     public function __construct(
         public string $id,

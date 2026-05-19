@@ -7,13 +7,14 @@ use Nickfairchild\KinstaPhpSdk\Dto\Hosting\Backups\BackupEnvironment;
 use Nickfairchild\KinstaPhpSdk\Dto\Hosting\Backups\DownloadableBackupEnvironment;
 use Nickfairchild\KinstaPhpSdk\Dto\Hosting\Backups\RestoreBackupRequestData;
 use Nickfairchild\KinstaPhpSdk\Dto\OperationResponse;
+use Nickfairchild\KinstaPhpSdk\Kinsta;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Backups\AddManualBackupRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Backups\GetBackupsRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Backups\GetDownloadableBackupsRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Backups\RemoveBackupRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Backups\RestoreBackupRequest;
 
-/** @mixin \Nickfairchild\KinstaPhpSdk\Kinsta */
+/** @mixin Kinsta */
 trait SupportsBackupEndpoints
 {
     public function backups(string $envId): BackupEnvironment

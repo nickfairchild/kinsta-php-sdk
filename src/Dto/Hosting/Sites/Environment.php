@@ -7,22 +7,22 @@ use Nickfairchild\KinstaPhpSdk\Dto\Domains\Domain;
 readonly class Environment
 {
     public function __construct(
-        protected string $id,
-        protected string $name,
-        protected string $displayName,
-        protected bool $isBlocked,
-        protected ?string $idEdgeCache,
-        protected ?string $cdnEdgeCache,
-        protected ?bool $isOptOutFromAutomaticPHPUpdates,
-        protected ?string $webRoot,
-        protected ?string $imageOptimizationType,
-        protected bool $isAdditionalSFTPAccountsEnabled,
-        protected bool $isPremium,
-        protected string $wordpressVersion,
-        protected array $domains,
-        protected Domain $primaryDomain,
-        protected array $sshConnection,
-        protected array $containerInfo,
+        public string $id,
+        public string $name,
+        public string $displayName,
+        public bool $isBlocked,
+        public ?string $idEdgeCache,
+        public ?string $cdnEdgeCache,
+        public ?bool $isOptOutFromAutomaticPHPUpdates,
+        public ?string $webRoot,
+        public ?string $imageOptimizationType,
+        public bool $isAdditionalSFTPAccountsEnabled,
+        public bool $isPremium,
+        public string $wordpressVersion,
+        public array $domains,
+        public Domain $primaryDomain,
+        public array $sshConnection,
+        public array $containerInfo,
     ) {}
 
     public static function fromArray(array $data): self
