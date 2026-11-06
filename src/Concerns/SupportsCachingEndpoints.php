@@ -3,6 +3,7 @@
 namespace Nickfairchild\KinstaPhpSdk\Concerns;
 
 use Nickfairchild\KinstaPhpSdk\Dto\OperationResponse;
+use Nickfairchild\KinstaPhpSdk\Enums\ImageOptimizationType;
 use Nickfairchild\KinstaPhpSdk\Kinsta;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Caching\ClearCdnCacheRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Caching\ClearEdgeCacheRequest;
@@ -33,7 +34,7 @@ trait SupportsCachingEndpoints
         return $this->send($request)->dto();
     }
 
-    public function setImageOptimization(string $envId, string $type): OperationResponse
+    public function setImageOptimization(string $envId, ImageOptimizationType $type): OperationResponse
     {
         $request = new SetImageOptimizationRequest($envId, $type);
 

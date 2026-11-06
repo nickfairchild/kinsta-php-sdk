@@ -2,6 +2,7 @@
 
 use Nickfairchild\KinstaPhpSdk\Dto\SiteTools\PhpAllocationData;
 use Nickfairchild\KinstaPhpSdk\Dto\SiteTools\SearchAndReplaceData;
+use Nickfairchild\KinstaPhpSdk\Enums\ForceHttpsType;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\SiteTools\ChangeEnvironmentPhpAllocationRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\SiteTools\ChangeEnvironmentWebrootRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\SiteTools\ChangeSitePhpAllocationRequest;
@@ -182,6 +183,16 @@ it('can list files', function () {
         && $response->getPendingRequest()->getUrl() === 'https://api.kinsta.com/v2/sites/environments/env-123/file-list');
 });
 
+it('returns a null force HTTPS status for undocumented values', function () {
+    MockClient::global([
+        GetForceHttpsStatusRequest::class => MockResponse::make([
+            'force_https_status' => 'SOMETHING_NEW',
+        ]),
+    ]);
+
+    expect($this->kinsta->getForceHttpsStatus('env-123')->status)->toBeNull();
+});
+
 it('can get force HTTPS status', function () {
     $mock = MockClient::global([
         GetForceHttpsStatusRequest::class => MockResponse::make([
@@ -191,7 +202,7 @@ it('can get force HTTPS status', function () {
 
     $response = $this->kinsta->getForceHttpsStatus('env-123');
 
-    expect($response->status)->toBe('ENABLED_FOR_ALL');
+    expect($response->status)->toBe(ForceHttpsType::ENABLED_FOR_ALL);
 
     $mock->assertSent(fn ($request, $response) => $response->getPendingRequest()->getMethod() === Method::GET
         && $response->getPendingRequest()->getUrl() === 'https://api.kinsta.com/v2/sites/environments/env-123/force-https-status');
@@ -206,7 +217,7 @@ it('can set force HTTPS status', function () {
         ], 202),
     ]);
 
-    $response = $this->kinsta->setForceHttpsStatus('env-123', 'ENABLED_REDIRECT_TO_PRIMARY');
+    $response = $this->kinsta->setForceHttpsStatus('env-123', ForceHttpsType::ENABLED_REDIRECT_TO_PRIMARY);
 
     expect($response->status)->toBe(202)
         ->and($response->operationId)->toBe('force-https-123');

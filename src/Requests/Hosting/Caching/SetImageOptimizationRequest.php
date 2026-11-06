@@ -3,6 +3,7 @@
 namespace Nickfairchild\KinstaPhpSdk\Requests\Hosting\Caching;
 
 use Nickfairchild\KinstaPhpSdk\Dto\OperationResponse;
+use Nickfairchild\KinstaPhpSdk\Enums\ImageOptimizationType;
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
@@ -17,7 +18,7 @@ class SetImageOptimizationRequest extends Request implements HasBody
 
     public function __construct(
         protected string $envId,
-        protected string $type,
+        protected ImageOptimizationType $type,
     ) {}
 
     public function resolveEndpoint(): string
@@ -29,7 +30,7 @@ class SetImageOptimizationRequest extends Request implements HasBody
     {
         return [
             'environment_id' => $this->envId,
-            'image_optimization_type' => $this->type,
+            'image_optimization_type' => $this->type->value,
         ];
     }
 

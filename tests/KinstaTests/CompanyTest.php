@@ -1,7 +1,10 @@
 <?php
 
+use Nickfairchild\KinstaPhpSdk\Dto\Company\ActivityLogs;
 use Nickfairchild\KinstaPhpSdk\Dto\Company\PluginThemePayload;
 use Nickfairchild\KinstaPhpSdk\Dto\Company\SiteCapabilityData;
+use Nickfairchild\KinstaPhpSdk\Enums\Category;
+use Nickfairchild\KinstaPhpSdk\Enums\Language;
 use Nickfairchild\KinstaPhpSdk\Requests\Company\GetActivityLogsRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Company\GetAPIKeysRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Company\GetCompanyPluginsRequest;
@@ -135,31 +138,62 @@ it('can get a list of activity logs', function () {
         ]),
     ]);
 
-    $responses = $this->kinsta->activityLogs();
+    $response = $this->kinsta->activityLogs();
 
-    foreach ($responses as $response) {
-        expect($response->items)->toBeArray()
-            ->and($response->total)->toBeInt()->toBe(1);
+    expect($response)->toBeInstanceOf(ActivityLogs::class);
 
-        foreach ($response->items as $item) {
-            expect($item->id)->toBeInt()
-                ->and($item->siteId)->toBeString()
-                ->and($item->createdAt)->toBeInt()
-                ->and($item->isDone)->toBeBool()->toBeTrue()
-                ->and($item->hasFailed)->toBeBool()->toBeFalse()
-                ->and($item->hasWarning)->toBeBool()->toBeFalse()
-                ->and($item->type)->toBeString()
-                ->and($item->publicError)->toBeString()
-                ->and($item->ipAddress)->toBeString()
-                ->and($item->descriptions)->toBeArray()
-                ->and($item->initiatedBy)->toBeArray()
-                ->and($item->userAgentInfo)->toBeArray()
-                ->and($item->apiKeyInfo)->toBeArray();
-        }
+    expect($response->items)->toBeArray()
+        ->and($response->total)->toBeInt()->toBe(1);
+
+    foreach ($response->items as $item) {
+        expect($item->id)->toBeInt()
+            ->and($item->siteId)->toBeString()
+            ->and($item->createdAt)->toBeInt()
+            ->and($item->isDone)->toBeBool()->toBeTrue()
+            ->and($item->hasFailed)->toBeBool()->toBeFalse()
+            ->and($item->hasWarning)->toBeBool()->toBeFalse()
+            ->and($item->type)->toBeString()
+            ->and($item->publicError)->toBeString()
+            ->and($item->ipAddress)->toBeString()
+            ->and($item->descriptions)->toBeArray()
+            ->and($item->initiatedBy)->toBeArray()
+            ->and($item->userAgentInfo)->toBeArray()
+            ->and($item->apiKeyInfo)->toBeArray();
     }
 });
 
-// it('can get a list of activity logs with filters', function () {});
+it('can get a list of activity logs with filters', function () {
+    $mock = MockClient::global([
+        GetActivityLogsRequest::class => MockResponse::make([
+            'company' => [
+                'activity_logs' => [
+                    'items' => [],
+                    'total' => 0,
+                ],
+            ],
+        ]),
+    ]);
+
+    $response = $this->kinsta->activityLogs(
+        limit: 5,
+        offset: 10,
+        category: Category::SITE_ACTIONS,
+        siteId: 'site-1',
+        language: Language::JAPANESE,
+    );
+
+    expect($response->items)->toBe([])
+        ->and($response->total)->toBe(0);
+
+    $mock->assertSent(fn ($request, $response) => $response->getPendingRequest()->getMethod() === Method::GET
+        && $response->getPendingRequest()->query()->all() === [
+            'limit' => 5,
+            'offset' => 10,
+            'category' => 'siteActions',
+            'site_id' => 'site-1',
+            'language' => 'ja',
+        ]);
+});
 
 it('can get a list of plugins', function () {
     MockClient::global([
@@ -352,4 +386,9 @@ it('can set site capabilities for users', function () {
     });
 
     expect($response->operationId)->toBe('op-2');
+});
+
+it('supports every documented activity log language', function () {
+    expect(array_map(fn (Language $language) => $language->value, Language::cases()))
+        ->toBe(['da', 'de', 'en', 'es', 'fr', 'it', 'ja', 'nl', 'pt', 'sv']);
 });

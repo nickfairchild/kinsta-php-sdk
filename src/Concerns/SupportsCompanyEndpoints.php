@@ -2,10 +2,13 @@
 
 namespace Nickfairchild\KinstaPhpSdk\Concerns;
 
+use Nickfairchild\KinstaPhpSdk\Dto\Company\ActivityLogs;
 use Nickfairchild\KinstaPhpSdk\Dto\Company\CompanyUser;
 use Nickfairchild\KinstaPhpSdk\Dto\Company\PluginThemePayload;
 use Nickfairchild\KinstaPhpSdk\Dto\Company\SiteCapabilityData;
 use Nickfairchild\KinstaPhpSdk\Dto\OperationResponse;
+use Nickfairchild\KinstaPhpSdk\Enums\Category;
+use Nickfairchild\KinstaPhpSdk\Enums\Language;
 use Nickfairchild\KinstaPhpSdk\Requests\Company\GetActivityLogsRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Company\GetAPIKeysRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Company\GetCompanyPluginsRequest;
@@ -65,9 +68,25 @@ trait SupportsCompanyEndpoints
         return $this->send($request)->dto();
     }
 
-    public function activityLogs(): array
-    {
-        $request = new GetActivityLogsRequest($this->companyId);
+    public function activityLogs(
+        ?int $limit = null,
+        ?int $offset = null,
+        ?Category $category = null,
+        ?string $siteId = null,
+        ?string $idInitiatedBy = null,
+        ?string $idApiKey = null,
+        ?Language $language = null,
+    ): ActivityLogs {
+        $request = new GetActivityLogsRequest(
+            $this->companyId,
+            $limit,
+            $offset,
+            $category,
+            $siteId,
+            $idInitiatedBy,
+            $idApiKey,
+            $language,
+        );
 
         return $this->send($request)->dto();
     }

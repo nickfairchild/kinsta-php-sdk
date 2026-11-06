@@ -2,16 +2,19 @@
 
 namespace Nickfairchild\KinstaPhpSdk\Dto\SiteTools;
 
+use Nickfairchild\KinstaPhpSdk\Enums\ForceHttpsType;
+
 readonly class ForceHttpsStatus
 {
     public function __construct(
-        public string $status,
+        public ?ForceHttpsType $status,
     ) {}
 
     public static function fromResponse(array $data): self
     {
         return new self(
-            status: $data['force_https_status'],
+            // Values outside the documented enum become null rather than throwing.
+            status: ForceHttpsType::tryFrom($data['force_https_status'] ?? ''),
         );
     }
 }

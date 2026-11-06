@@ -31,7 +31,7 @@ class GetActivityLogsRequest extends Request
 
     protected function defaultQuery(): array
     {
-        return [
+        return array_filter([
             'limit' => $this->limit,
             'offset' => $this->offset,
             'category' => $this->category?->value,
@@ -39,11 +39,11 @@ class GetActivityLogsRequest extends Request
             'id_initiated_by' => $this->idInitiatedBy,
             'id_api_key' => $this->idApiKey,
             'language' => $this->language?->value,
-        ];
+        ], fn ($value) => $value !== null);
     }
 
     public function createDtoFromResponse(Response $response): mixed
     {
-        return ActivityLogs::collect($response->json('company'));
+        return ActivityLogs::fromResponse($response->json('company.activity_logs'));
     }
 }

@@ -7,6 +7,7 @@ use Nickfairchild\KinstaPhpSdk\Dto\SiteTools\FileListResult;
 use Nickfairchild\KinstaPhpSdk\Dto\SiteTools\ForceHttpsStatus;
 use Nickfairchild\KinstaPhpSdk\Dto\SiteTools\PhpAllocationData;
 use Nickfairchild\KinstaPhpSdk\Dto\SiteTools\SearchAndReplaceData;
+use Nickfairchild\KinstaPhpSdk\Enums\ForceHttpsType;
 use Nickfairchild\KinstaPhpSdk\Kinsta;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\SiteTools\ChangeEnvironmentPhpAllocationRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\SiteTools\ChangeEnvironmentWebrootRequest;
@@ -78,7 +79,7 @@ trait SupportsSiteToolsEndpoints
         return $this->send($request)->dto();
     }
 
-    public function setForceHttpsStatus(string $envId, string $type): OperationResponse
+    public function setForceHttpsStatus(string $envId, ForceHttpsType $type): OperationResponse
     {
         $request = new SetForceHttpsStatusRequest($envId, $type);
 

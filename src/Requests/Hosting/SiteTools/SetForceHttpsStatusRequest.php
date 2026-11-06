@@ -3,6 +3,7 @@
 namespace Nickfairchild\KinstaPhpSdk\Requests\Hosting\SiteTools;
 
 use Nickfairchild\KinstaPhpSdk\Dto\OperationResponse;
+use Nickfairchild\KinstaPhpSdk\Enums\ForceHttpsType;
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
@@ -17,7 +18,7 @@ class SetForceHttpsStatusRequest extends Request implements HasBody
 
     public function __construct(
         protected string $envId,
-        protected string $type,
+        protected ForceHttpsType $type,
     ) {}
 
     public function resolveEndpoint(): string
@@ -28,7 +29,7 @@ class SetForceHttpsStatusRequest extends Request implements HasBody
     protected function defaultBody(): array
     {
         return [
-            'type' => $this->type,
+            'type' => $this->type->value,
         ];
     }
 

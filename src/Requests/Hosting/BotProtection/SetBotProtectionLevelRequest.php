@@ -3,6 +3,7 @@
 namespace Nickfairchild\KinstaPhpSdk\Requests\Hosting\BotProtection;
 
 use Nickfairchild\KinstaPhpSdk\Dto\OperationResponse;
+use Nickfairchild\KinstaPhpSdk\Enums\ProtectionLevel;
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
@@ -17,7 +18,7 @@ class SetBotProtectionLevelRequest extends Request implements HasBody
 
     public function __construct(
         protected string $envId,
-        protected string $level,
+        protected ProtectionLevel $level,
     ) {}
 
     public function resolveEndpoint(): string
@@ -28,7 +29,7 @@ class SetBotProtectionLevelRequest extends Request implements HasBody
     protected function defaultBody(): array
     {
         return [
-            'level' => $this->level,
+            'level' => $this->level->value,
         ];
     }
 

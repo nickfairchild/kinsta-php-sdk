@@ -8,6 +8,7 @@ use Nickfairchild\KinstaPhpSdk\Dto\BotProtection\ExceptionRuleData;
 use Nickfairchild\KinstaPhpSdk\Dto\BotProtection\ExceptionRules;
 use Nickfairchild\KinstaPhpSdk\Dto\BotProtection\WpAutomationsStatus;
 use Nickfairchild\KinstaPhpSdk\Dto\OperationResponse;
+use Nickfairchild\KinstaPhpSdk\Enums\ProtectionLevel;
 use Nickfairchild\KinstaPhpSdk\Kinsta;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\BotProtection\AddExceptionRuleRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\BotProtection\GetAiCrawlersBlockingRequest;
@@ -29,7 +30,7 @@ trait SupportsBotProtectionEndpoints
         return $this->send($request)->dto();
     }
 
-    public function setBotProtectionLevel(string $envId, string $level): OperationResponse
+    public function setBotProtectionLevel(string $envId, ProtectionLevel $level): OperationResponse
     {
         $request = new SetBotProtectionLevelRequest($envId, $level);
 

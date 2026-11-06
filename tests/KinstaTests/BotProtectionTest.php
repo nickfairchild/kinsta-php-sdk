@@ -1,6 +1,7 @@
 <?php
 
 use Nickfairchild\KinstaPhpSdk\Dto\BotProtection\ExceptionRuleData;
+use Nickfairchild\KinstaPhpSdk\Enums\ProtectionLevel;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\BotProtection\AddExceptionRuleRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\BotProtection\GetAiCrawlersBlockingRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\BotProtection\GetBotProtectionLevelRequest;
@@ -42,7 +43,17 @@ it('can get the bot protection level', function () {
     });
 
     expect($response->id)->toBe('env-1')
-        ->and($response->level)->toBe('block-automations');
+        ->and($response->level)->toBe(ProtectionLevel::BLOCK_AUTOMATIONS);
+});
+
+it('returns a null level for undocumented bot protection levels', function () {
+    MockClient::global([
+        GetBotProtectionLevelRequest::class => MockResponse::make([
+            'bot_protection' => ['id' => 'env-1', 'level' => 'something-new'],
+        ]),
+    ]);
+
+    expect($this->kinsta->getBotProtectionLevel('env-1')->level)->toBeNull();
 });
 
 it('returns null when bot protection is not available', function () {
@@ -56,7 +67,7 @@ it('returns null when bot protection is not available', function () {
 it('can set the bot protection level', function () {
     MockClient::global([SetBotProtectionLevelRequest::class => botProtectionOperation()]);
 
-    $response = $this->kinsta->setBotProtectionLevel('env-1', 'challenge-bots');
+    $response = $this->kinsta->setBotProtectionLevel('env-1', ProtectionLevel::CHALLENGE_BOTS);
 
     MockClient::global()->assertSent(function (SetBotProtectionLevelRequest $request) {
         return $request->getMethod() === Method::PUT

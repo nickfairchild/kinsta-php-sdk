@@ -2,18 +2,21 @@
 
 namespace Nickfairchild\KinstaPhpSdk\Dto\BotProtection;
 
+use Nickfairchild\KinstaPhpSdk\Enums\ProtectionLevel;
+
 readonly class BotProtectionLevel
 {
     public function __construct(
         public string $id,
-        public string $level,
+        public ?ProtectionLevel $level,
     ) {}
 
     public static function fromResponse(array $data): self
     {
         return new self(
             id: $data['id'],
-            level: $data['level'],
+            // Values outside the documented enum become null rather than throwing.
+            level: ProtectionLevel::tryFrom($data['level'] ?? ''),
         );
     }
 }

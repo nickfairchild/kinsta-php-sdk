@@ -1,5 +1,6 @@
 <?php
 
+use Nickfairchild\KinstaPhpSdk\Enums\ImageOptimizationType;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Caching\ClearCdnCacheRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Caching\ClearEdgeCacheRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Caching\SetEdgeCacheStatusRequest;
@@ -96,7 +97,7 @@ it('can set image optimization', function () {
         ]),
     ]);
 
-    $response = $this->kinsta->setImageOptimization('env-123', 'lossy');
+    $response = $this->kinsta->setImageOptimization('env-123', ImageOptimizationType::LOSSY);
 
     expect($response->message)->toBe('Successfully finished request')
         ->and($response->operationId)->toBe('set-img-opt-123');
@@ -104,4 +105,18 @@ it('can set image optimization', function () {
     $mock->assertSent(fn ($request, $response) => $response->getPendingRequest()->getMethod() === Method::PUT
         && $response->getPendingRequest()->getUrl() === 'https://api.kinsta.com/v2/sites/cdn/image-optimization'
         && $response->getPendingRequest()->body()->all() === ['environment_id' => 'env-123', 'image_optimization_type' => 'lossy']);
+});
+
+it('sends image optimization off as the string "off"', function () {
+    $mock = MockClient::global([
+        SetImageOptimizationRequest::class => MockResponse::make([
+            'message' => 'Successfully finished request',
+            'status' => 202,
+            'operation_id' => 'set-img-opt-123',
+        ]),
+    ]);
+
+    $this->kinsta->setImageOptimization('env-123', ImageOptimizationType::OFF);
+
+    $mock->assertSent(fn ($request, $response) => $response->getPendingRequest()->body()->all() === ['environment_id' => 'env-123', 'image_optimization_type' => 'off']);
 });
