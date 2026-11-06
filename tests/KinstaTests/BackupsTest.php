@@ -2,13 +2,18 @@
 
 use Nickfairchild\KinstaPhpSdk\Dto\Hosting\Backups\AddManualBackupRequestData;
 use Nickfairchild\KinstaPhpSdk\Dto\Hosting\Backups\RestoreBackupRequestData;
+use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Backups\AddDownloadableBackupRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Backups\AddManualBackupRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Backups\GetBackupsRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Backups\GetDownloadableBackupsRequest;
+use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Backups\GetNextDownloadableBackupAvailableRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Backups\RemoveBackupRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Backups\RestoreBackupRequest;
+use Saloon\Enums\Method;
 use Saloon\Http\Faking\MockClient;
 use Saloon\Http\Faking\MockResponse;
+use Saloon\Http\Request;
+use Saloon\Http\Response;
 
 beforeEach(function () {
     $this->kinsta = kinstaMock();
@@ -141,4 +146,49 @@ it('can remove a backup', function () {
     expect($response->message)->toBeString()->toBe('Successfully finished request')
         ->and($response->status)->toBeInt()->toBe(200)
         ->and($response->operationId)->toBeString()->toBe('delete-op-456');
+});
+
+it('can add a downloadable backup', function () {
+    $mockClient = MockClient::global([
+        AddDownloadableBackupRequest::class => MockResponse::make([
+            'operation_id' => 'downloadable-backups:add-54fb80af',
+            'message' => 'Adding a downloadable backup in progress',
+            'status' => 202,
+        ], 202),
+    ]);
+
+    $response = $this->kinsta->addDownloadableBackup('env-123');
+
+    expect($response->operationId)->toBe('downloadable-backups:add-54fb80af')
+        ->and($response->status)->toBe(202);
+
+    $mockClient->assertSent(function (Request $request, Response $response) {
+        $pendingRequest = $response->getPendingRequest();
+
+        return $request instanceof AddDownloadableBackupRequest
+            && $pendingRequest->getMethod() === Method::POST
+            && $pendingRequest->getUrl() === 'https://api.kinsta.com/v2/sites/environments/env-123/downloadable-backups';
+    });
+});
+
+it('can get the next available downloadable backup', function () {
+    $mockClient = MockClient::global([
+        GetNextDownloadableBackupAvailableRequest::class => MockResponse::make([
+            'is_backup_available' => false,
+            'reset_at' => '2026-11-07T10:00:00.000Z',
+        ]),
+    ]);
+
+    $next = $this->kinsta->nextDownloadableBackupAvailable('env-123');
+
+    expect($next->isBackupAvailable)->toBeFalse()
+        ->and($next->resetAt)->toBe('2026-11-07T10:00:00.000Z');
+
+    $mockClient->assertSent(function (Request $request, Response $response) {
+        $pendingRequest = $response->getPendingRequest();
+
+        return $request instanceof GetNextDownloadableBackupAvailableRequest
+            && $pendingRequest->getMethod() === Method::GET
+            && $pendingRequest->getUrl() === 'https://api.kinsta.com/v2/sites/environments/env-123/next-downloadable-backup-available';
+    });
 });

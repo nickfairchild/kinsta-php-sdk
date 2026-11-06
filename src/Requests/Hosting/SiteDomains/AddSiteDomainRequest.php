@@ -28,15 +28,14 @@ class AddSiteDomainRequest extends Request implements HasBody
 
     protected function defaultBody(): array
     {
-        $body = [
-            'name' => $this->data->domain,
-        ];
-
-        if ($this->data->isPrimary !== null) {
-            $body['is_primary'] = $this->data->isPrimary ? 'true' : 'false';
-        }
-
-        return $body;
+        return array_filter([
+            'domain_name' => $this->data->domain,
+            'is_wildcardless' => $this->data->isWildcardless,
+            'add_with_www_subdomain' => $this->data->addWithWwwSubdomain,
+            'setup_type' => $this->data->setupType,
+            'custom_ssl_key' => $this->data->customSslKey,
+            'custom_ssl_cert' => $this->data->customSslCert,
+        ], fn ($value) => $value !== null);
     }
 
     public function createDtoFromResponse(Response $response): mixed

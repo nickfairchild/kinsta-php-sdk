@@ -19,12 +19,14 @@ use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Sftp\GetSftpPasswordRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Sftp\GetSshStatusRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Sftp\RemoveAdditionalSftpAccountRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Sftp\SetSftpIpAllowlistRequest;
+use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Sftp\ToggleAdditionalSftpAccountsRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Sftp\ToggleSftpAccessRequest;
+use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Sftp\ToggleSftpPasswordAccessRequest;
 
 /** @mixin Kinsta */
 trait SupportsSftpEndpoints
 {
-    public function toggleSftpAccess(string $envId, bool $enabled): OperationResponse
+    public function toggleSftpAccess(string $envId, bool $enabled): bool
     {
         $request = new ToggleSftpAccessRequest($envId, $enabled);
 
@@ -38,7 +40,14 @@ trait SupportsSftpEndpoints
         return $this->send($request)->dto();
     }
 
-    public function generateSftpPassword(string $envId): SftpPassword
+    public function toggleSftpPasswordAccess(string $envId, bool $enabled): bool
+    {
+        $request = new ToggleSftpPasswordAccessRequest($envId, $enabled);
+
+        return $this->send($request)->dto();
+    }
+
+    public function generateSftpPassword(string $envId): bool
     {
         $request = new GenerateSftpPasswordRequest($envId);
 
@@ -52,7 +61,7 @@ trait SupportsSftpEndpoints
         return $this->send($request)->dto();
     }
 
-    public function setSftpIpAllowlist(string $envId, array $ips): OperationResponse
+    public function setSftpIpAllowlist(string $envId, array $ips): bool
     {
         $request = new SetSftpIpAllowlistRequest($envId, $ips);
 
@@ -66,7 +75,7 @@ trait SupportsSftpEndpoints
         return $this->send($request)->dto();
     }
 
-    public function changeSftpPasswordExpiration(string $envId, int $interval): OperationResponse
+    public function changeSftpPasswordExpiration(string $envId, string $interval): bool
     {
         $request = new ChangeSftpPasswordExpirationRequest($envId, $interval);
 
@@ -90,6 +99,13 @@ trait SupportsSftpEndpoints
     public function getAdditionalSftpAccounts(string $envId): SftpAccounts
     {
         $request = new GetAdditionalSftpAccountsRequest($envId);
+
+        return $this->send($request)->dto();
+    }
+
+    public function toggleAdditionalSftpAccounts(string $envId, bool $enabled): OperationResponse
+    {
+        $request = new ToggleAdditionalSftpAccountsRequest($envId, $enabled);
 
         return $this->send($request)->dto();
     }

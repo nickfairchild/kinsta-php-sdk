@@ -25,7 +25,7 @@ readonly class Environment
         public array $containerInfo,
     ) {}
 
-    public static function fromArray(array $data): self
+    public static function fromResponse(array $data): self
     {
         return new self(
             id: $data['id'],
@@ -33,15 +33,15 @@ readonly class Environment
             displayName: $data['display_name'],
             isBlocked: $data['is_blocked'],
             idEdgeCache: $data['id_edge_cache'] ?? null,
-            cdnEdgeCache: $data['cdn_edge_cache'] ?? null,
-            isOptOutFromAutomaticPHPUpdates: $data['is_opt_out_from_automatic_php_updates'] ?? null,
+            cdnEdgeCache: $data['cdn_cache_id'] ?? $data['cdn_edge_cache'] ?? null,
+            isOptOutFromAutomaticPHPUpdates: $data['is_opt_out_from_automatic_php_update'] ?? $data['is_opt_out_from_automatic_php_updates'] ?? null,
             webRoot: $data['web_root'] ?? '',
             imageOptimizationType: $data['image_optimization_type'] ?? '',
             isAdditionalSFTPAccountsEnabled: $data['is_additional_sftp_accounts_enabled'] ?? false,
             isPremium: $data['is_premium'],
             wordpressVersion: $data['wordpress_version'] ?? '',
             domains: $data['domains'],
-            primaryDomain: Domain::fromResponse($data['primary_domain'] ?? []),
+            primaryDomain: Domain::fromResponse($data['primaryDomain'] ?? $data['primary_domain'] ?? []),
             sshConnection: $data['ssh_connection'] ?? [],
             containerInfo: $data['container_info'] ?? [],
         );

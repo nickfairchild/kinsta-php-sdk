@@ -5,6 +5,7 @@ namespace Nickfairchild\KinstaPhpSdk;
 use Nickfairchild\KinstaPhpSdk\Concerns\SupportsAdditionalToolsEndpoints;
 use Nickfairchild\KinstaPhpSdk\Concerns\SupportsAnalyticsEndpoints;
 use Nickfairchild\KinstaPhpSdk\Concerns\SupportsBackupEndpoints;
+use Nickfairchild\KinstaPhpSdk\Concerns\SupportsBotProtectionEndpoints;
 use Nickfairchild\KinstaPhpSdk\Concerns\SupportsCachingEndpoints;
 use Nickfairchild\KinstaPhpSdk\Concerns\SupportsCompanyEndpoints;
 use Nickfairchild\KinstaPhpSdk\Concerns\SupportsDomainEndpoints;
@@ -36,6 +37,7 @@ class Kinsta extends Connector implements HasPagination
     use SupportsAdditionalToolsEndpoints;
     use SupportsAnalyticsEndpoints;
     use SupportsBackupEndpoints;
+    use SupportsBotProtectionEndpoints;
     use SupportsCachingEndpoints;
     use SupportsCompanyEndpoints;
     use SupportsDomainEndpoints;

@@ -20,6 +20,6 @@ class GetSshStatusRequest extends Request
 
     public function createDtoFromResponse(Response $response): mixed
     {
-        return SftpStatus::fromResponse($response->json());
+        return SftpStatus::fromResponse($response->json('environment.active_container'));
     }
 }

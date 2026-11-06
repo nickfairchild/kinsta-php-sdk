@@ -20,6 +20,6 @@ class GetSiteEnvironmentsRequest extends Request
 
     public function createDtoFromResponse(Response $response): mixed
     {
-        return EnvironmentsCollection::fromResponse($response->json());
+        return EnvironmentsCollection::fromResponse($response->json('site'));
     }
 }

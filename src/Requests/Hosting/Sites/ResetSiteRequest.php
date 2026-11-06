@@ -22,7 +22,7 @@ class ResetSiteRequest extends Request implements HasBody
 
     public function resolveEndpoint(): string
     {
-        return '/sites/'.$this->siteId;
+        return '/sites/'.$this->siteId.'/reset-site';
     }
 
     protected function defaultBody(): array

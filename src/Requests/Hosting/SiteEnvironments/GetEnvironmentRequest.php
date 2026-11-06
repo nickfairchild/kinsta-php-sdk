@@ -20,6 +20,6 @@ class GetEnvironmentRequest extends Request
 
     public function createDtoFromResponse(Response $response): mixed
     {
-        return Environment::fromArray($response->json('environment'));
+        return Environment::fromResponse($response->json('environment'));
     }
 }

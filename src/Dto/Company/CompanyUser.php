@@ -7,8 +7,10 @@ readonly class CompanyUser
     public function __construct(
         public string $id,
         public string $email,
-        public string $image,
+        public ?string $image,
         public string $fullName,
+        public ?string $type2fa = null,
+        public array $capabilities = [],
     ) {}
 
     public static function fromResponse(array $data): self
@@ -16,8 +18,10 @@ readonly class CompanyUser
         return new self(
             id: $data['user']['id'],
             email: $data['user']['email'],
-            image: $data['user']['image'],
+            image: $data['user']['image'] ?? null,
             fullName: $data['user']['full_name'],
+            type2fa: $data['user']['type_2fa'] ?? null,
+            capabilities: UserCapability::collect($data['capabilities'] ?? []),
         );
     }
 

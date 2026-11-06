@@ -20,6 +20,6 @@ class GetBandwidthUsageRequest extends Request
 
     public function createDtoFromResponse(Response $response): mixed
     {
-        return UsageResult::fromResponse($response->json());
+        return UsageResult::fromResponse($response->json('site'), 'this_month_usage', 'bandwidth');
     }
 }

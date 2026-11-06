@@ -29,8 +29,8 @@ class UpdatePluginRequest extends Request implements HasBody
     protected function defaultBody(): array
     {
         return [
-            'slug' => $this->data->slug,
-            'version' => $this->data->version,
+            'name' => $this->data->name,
+            'update_version' => $this->data->updateVersion,
         ];
     }
 

@@ -2,8 +2,8 @@
 
 namespace Nickfairchild\KinstaPhpSdk\Requests\Hosting\WordPressTools;
 
-use Nickfairchild\KinstaPhpSdk\Dto\OperationResponse;
 use Nickfairchild\KinstaPhpSdk\Dto\WordPressTools\WpAdminUserData;
+use Nickfairchild\KinstaPhpSdk\Dto\WordPressTools\WpAdminUserResult;
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
@@ -30,7 +30,6 @@ class CreateWpAdminUserRequest extends Request implements HasBody
     {
         return [
             'email' => $this->data->email,
-            'password' => $this->data->password,
             'first_name' => $this->data->firstName,
             'last_name' => $this->data->lastName,
         ];
@@ -38,6 +37,6 @@ class CreateWpAdminUserRequest extends Request implements HasBody
 
     public function createDtoFromResponse(Response $response): mixed
     {
-        return OperationResponse::fromResponse($response);
+        return WpAdminUserResult::fromResponse($response->json());
     }
 }

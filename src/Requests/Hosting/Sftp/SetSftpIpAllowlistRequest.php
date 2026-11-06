@@ -2,7 +2,6 @@
 
 namespace Nickfairchild\KinstaPhpSdk\Requests\Hosting\Sftp;
 
-use Nickfairchild\KinstaPhpSdk\Dto\OperationResponse;
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
@@ -28,12 +27,12 @@ class SetSftpIpAllowlistRequest extends Request implements HasBody
     protected function defaultBody(): array
     {
         return [
-            'allowed_ips' => $this->ips,
+            'ip_allowlist' => $this->ips,
         ];
     }
 
     public function createDtoFromResponse(Response $response): mixed
     {
-        return OperationResponse::fromResponse($response);
+        return $response->successful();
     }
 }

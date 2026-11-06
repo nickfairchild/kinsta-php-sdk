@@ -15,7 +15,10 @@ class ClearCdnCacheRequest extends Request implements HasBody
 
     protected Method $method = Method::POST;
 
-    public function __construct(protected string $siteId) {}
+    public function __construct(
+        protected string $envId,
+        protected string $cdnCacheId,
+    ) {}
 
     public function resolveEndpoint(): string
     {
@@ -25,7 +28,8 @@ class ClearCdnCacheRequest extends Request implements HasBody
     protected function defaultBody(): array
     {
         return [
-            'site_id' => $this->siteId,
+            'environment_id' => $this->envId,
+            'cdn_cache_id' => $this->cdnCacheId,
         ];
     }
 

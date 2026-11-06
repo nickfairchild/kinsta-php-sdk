@@ -29,9 +29,8 @@ class ChangeEnvironmentPhpAllocationRequest extends Request implements HasBody
     protected function defaultBody(): array
     {
         return [
-            'memory' => $this->data->memory,
-            'max_execution_time' => $this->data->maxExecutionTime,
-            'http_max_connections' => $this->data->httpMaxConnections,
+            'thread_count' => $this->data->threadCount,
+            'thread_memory' => $this->data->threadMemory,
         ];
     }
 

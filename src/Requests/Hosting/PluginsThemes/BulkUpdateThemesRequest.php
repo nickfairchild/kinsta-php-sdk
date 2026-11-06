@@ -29,7 +29,10 @@ class BulkUpdateThemesRequest extends Request implements HasBody
     protected function defaultBody(): array
     {
         return [
-            'theme_slugs' => $this->data->themeSlugs,
+            'themes' => array_map(
+                fn (string $name) => ['name' => $name],
+                $this->data->themes,
+            ),
         ];
     }
 

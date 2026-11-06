@@ -4,21 +4,18 @@ namespace Nickfairchild\KinstaPhpSdk\Requests\Hosting\Analytics;
 
 use Nickfairchild\KinstaPhpSdk\Dto\Analytics\AnalyticsQuery;
 use Nickfairchild\KinstaPhpSdk\Dto\Analytics\AnalyticsResult;
-use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
-use Saloon\Traits\Body\HasJsonBody;
 
-class GetResponseCodeBreakdownRequest extends Request implements HasBody
+class GetResponseCodeBreakdownRequest extends Request
 {
-    use HasJsonBody;
-
-    protected Method $method = Method::POST;
+    protected Method $method = Method::GET;
 
     public function __construct(
         protected string $envId,
-        protected AnalyticsQuery $analyticsQuery,
+        protected string $companyId,
+        protected AnalyticsQuery $analyticsQuery = new AnalyticsQuery,
     ) {}
 
     public function resolveEndpoint(): string
@@ -26,16 +23,18 @@ class GetResponseCodeBreakdownRequest extends Request implements HasBody
         return "/sites/environments/{$this->envId}/analytics/response-codes";
     }
 
-    protected function defaultBody(): array
+    protected function defaultQuery(): array
     {
-        return [
-            'interval' => $this->analyticsQuery->interval,
-            'timezone' => $this->analyticsQuery->timezone ?? 'UTC',
-        ];
+        return array_filter([
+            'company_id' => $this->companyId,
+            'time_span' => $this->analyticsQuery->timeSpan,
+            'from' => $this->analyticsQuery->from,
+            'to' => $this->analyticsQuery->to,
+        ], fn ($value) => $value !== null);
     }
 
     public function createDtoFromResponse(Response $response): mixed
     {
-        return AnalyticsResult::fromResponse($response->json());
+        return AnalyticsResult::fromResponse($response->json('analytics.analytics_response') ?? []);
     }
 }

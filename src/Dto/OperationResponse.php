@@ -9,7 +9,9 @@ readonly class OperationResponse
     public function __construct(
         public string $message,
         public int $status,
-        public string $operationId,
+        public ?string $operationId = null,
+        public ?int $supportReferenceId = null,
+        public ?string $warning = null,
     ) {}
 
     public static function fromResponse(Response $response): self
@@ -19,7 +21,9 @@ readonly class OperationResponse
         return new self(
             message: $data['message'],
             status: $data['status'],
-            operationId: $data['operation_id'],
+            operationId: $data['operation_id'] ?? null,
+            supportReferenceId: $data['support_reference_id'] ?? null,
+            warning: $data['warning'] ?? null,
         );
     }
 }

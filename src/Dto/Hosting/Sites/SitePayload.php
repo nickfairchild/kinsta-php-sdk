@@ -17,5 +17,6 @@ readonly class SitePayload
         public bool $isMultisite = false,
         public bool $woocommerce = false,
         public bool $wordpressSeo = false,
+        public string $installMode = 'new',
     ) {}
 }

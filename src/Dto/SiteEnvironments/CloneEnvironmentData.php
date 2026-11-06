@@ -7,5 +7,6 @@ readonly class CloneEnvironmentData
     public function __construct(
         public string $displayName,
         public string $sourceEnvId,
+        public bool $isPremium = false,
     ) {}
 }

@@ -20,6 +20,6 @@ class GetCdnBandwidthUsageRequest extends Request
 
     public function createDtoFromResponse(Response $response): mixed
     {
-        return UsageResult::fromResponse($response->json());
+        return UsageResult::fromResponse($response->json('site'), 'this_month_cdn_usage', 'bandwidth');
     }
 }

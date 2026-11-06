@@ -15,7 +15,11 @@ class ClearEdgeCacheRequest extends Request implements HasBody
 
     protected Method $method = Method::POST;
 
-    public function __construct(protected string $siteId) {}
+    public function __construct(
+        protected string $envId,
+        protected ?bool $clearSubdirectories = null,
+        protected ?string $url = null,
+    ) {}
 
     public function resolveEndpoint(): string
     {
@@ -24,9 +28,11 @@ class ClearEdgeCacheRequest extends Request implements HasBody
 
     protected function defaultBody(): array
     {
-        return [
-            'site_id' => $this->siteId,
-        ];
+        return array_filter([
+            'environment_id' => $this->envId,
+            'clear_subdirectories' => $this->clearSubdirectories,
+            'url' => $this->url,
+        ], fn ($value) => $value !== null);
     }
 
     public function createDtoFromResponse(Response $response): mixed

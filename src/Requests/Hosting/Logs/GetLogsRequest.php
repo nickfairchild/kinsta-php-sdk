@@ -4,17 +4,13 @@ namespace Nickfairchild\KinstaPhpSdk\Requests\Hosting\Logs;
 
 use Nickfairchild\KinstaPhpSdk\Dto\Logs\LogsQuery;
 use Nickfairchild\KinstaPhpSdk\Dto\Logs\LogsResult;
-use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
-use Saloon\Traits\Body\HasJsonBody;
 
-class GetLogsRequest extends Request implements HasBody
+class GetLogsRequest extends Request
 {
-    use HasJsonBody;
-
-    protected Method $method = Method::POST;
+    protected Method $method = Method::GET;
 
     public function __construct(
         protected string $envId,
@@ -26,11 +22,15 @@ class GetLogsRequest extends Request implements HasBody
         return "/sites/environments/{$this->envId}/logs";
     }
 
-    protected function defaultBody(): array
+    protected function defaultQuery(): array
     {
-        return [
-            'log_type' => $this->logsQuery->logType,
-        ];
+        return array_filter([
+            'file_name' => $this->logsQuery->fileName,
+            'lines' => $this->logsQuery->lines,
+            'from' => $this->logsQuery->from,
+            'to' => $this->logsQuery->to,
+            'search' => $this->logsQuery->search,
+        ], fn ($value) => $value !== null);
     }
 
     public function createDtoFromResponse(Response $response): mixed

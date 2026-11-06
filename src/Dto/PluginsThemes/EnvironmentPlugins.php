@@ -11,7 +11,7 @@ readonly class EnvironmentPlugins
     public static function fromResponse(array $data): self
     {
         return new self(
-            plugins: $data['plugins'] ?? [],
+            plugins: $data['environment']['container_info']['wp_plugins']['data'] ?? [],
         );
     }
 }

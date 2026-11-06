@@ -11,7 +11,7 @@ readonly class DeniedIpsResult
     public static function fromResponse(array $data): self
     {
         return new self(
-            ips: $data['denied_ips'] ?? [],
+            ips: $data['environment']['ip_list'] ?? [],
         );
     }
 }

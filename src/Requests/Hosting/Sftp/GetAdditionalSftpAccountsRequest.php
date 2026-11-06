@@ -20,6 +20,6 @@ class GetAdditionalSftpAccountsRequest extends Request
 
     public function createDtoFromResponse(Response $response): mixed
     {
-        return SftpAccounts::fromResponse($response->json());
+        return SftpAccounts::fromResponse($response->json('environment'));
     }
 }

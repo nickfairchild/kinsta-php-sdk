@@ -9,25 +9,26 @@ readonly class Site
         public string $name,
         public string $displayName,
         public string $status,
-        public ?array $environments = [],
+        public ?EnvironmentsCollection $environments = null,
         public ?array $siteLabels = null,
         public ?string $companyId = null,
     ) {}
 
-    public static function fromArray($data): self
+    public static function fromResponse($data): self
     {
-        $environments = array_map(function (array $data) {
-            return Environment::fromArray($data);
-        }, $data['environments']);
-
         return new self(
             id: $data['id'],
             name: $data['name'],
             displayName: $data['display_name'],
             status: $data['status'],
-            environments: $environments,
-            siteLabels: $data['site_labels'] ?? null,
+            environments: EnvironmentsCollection::fromResponse($data ?? []),
+            siteLabels: $data['siteLabels'] ?? $data['site_labels'] ?? null,
             companyId: $data['company_id'] ?? null,
         );
+    }
+
+    public static function collect(array $items)
+    {
+        return array_map(fn (array $item) => self::fromResponse($item), $items);
     }
 }

@@ -19,6 +19,6 @@ class GetSftpIpAllowlistRequest extends Request
 
     public function createDtoFromResponse(Response $response): mixed
     {
-        return $response->json('allowed_ips') ?? [];
+        return $response->json('environment.active_container.sftp_ip_allowlist') ?? [];
     }
 }

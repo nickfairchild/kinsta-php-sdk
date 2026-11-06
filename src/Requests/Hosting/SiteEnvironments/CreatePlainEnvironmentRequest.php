@@ -30,6 +30,7 @@ class CreatePlainEnvironmentRequest extends Request implements HasBody
     {
         return [
             'display_name' => $this->data->displayName,
+            'is_premium' => $this->data->isPremium,
         ];
     }
 

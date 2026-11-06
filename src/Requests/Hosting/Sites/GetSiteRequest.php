@@ -20,6 +20,6 @@ class GetSiteRequest extends Request
 
     public function createDtoFromResponse(Response $response): mixed
     {
-        return Site::fromArray($response->json('site'));
+        return Site::fromResponse($response->json('site'));
     }
 }

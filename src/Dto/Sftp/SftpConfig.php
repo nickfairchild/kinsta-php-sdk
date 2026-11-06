@@ -8,6 +8,7 @@ readonly class SftpConfig
         public string $host,
         public string $port,
         public string $username,
+        public ?string $sshCommand = null,
     ) {}
 
     public static function fromResponse(array $data): self
@@ -15,7 +16,8 @@ readonly class SftpConfig
         return new self(
             host: $data['host'],
             port: $data['port'],
-            username: $data['username'],
+            username: $data['user'],
+            sshCommand: $data['ssh_command'] ?? null,
         );
     }
 }

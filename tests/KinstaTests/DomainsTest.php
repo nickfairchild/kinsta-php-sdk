@@ -8,6 +8,7 @@ use Nickfairchild\KinstaPhpSdk\Requests\Domains\DeleteDNSRecord;
 use Nickfairchild\KinstaPhpSdk\Requests\Domains\GetDNSRecordsForDomain;
 use Nickfairchild\KinstaPhpSdk\Requests\Domains\GetDomainsRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Domains\UpdateDNSRecord;
+use Saloon\Enums\Method;
 use Saloon\Http\Faking\MockClient;
 use Saloon\Http\Faking\MockResponse;
 
@@ -119,6 +120,11 @@ it('can update a dns record', function () {
         ]
     );
     $response = $this->kinsta->updateDnsRecord('3487', $payload);
+
+    MockClient::global()->assertSent(function (UpdateDNSRecord $request) {
+        return $request->getMethod() === Method::PUT
+            && $request->resolveEndpoint() === '/domains/3487/dns-records';
+    });
 
     expect($response->message)->toBeString()
         ->and($response->status)->toBeInt()

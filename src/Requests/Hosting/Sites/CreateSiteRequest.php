@@ -25,20 +25,30 @@ class CreateSiteRequest extends Request implements HasBody
 
     protected function defaultBody(): array
     {
-        return [
+        $body = [
+            'company' => $this->companyId,
             'display_name' => $this->payload->displayName,
             'region' => $this->payload->region,
+            'install_mode' => $this->payload->installMode,
             'admin_email' => $this->payload->adminEmail,
             'admin_password' => $this->payload->adminPassword,
             'admin_user' => $this->payload->adminUser,
             'site_title' => $this->payload->siteTitle,
             'wp_language' => $this->payload->wpLanguage,
-            'company' => $this->companyId,
-            'is_subdomain_multisite' => $this->payload->isSubdomainMultisite ? 'true' : 'false',
-            'is_multisite' => $this->payload->isMultisite ? 'true' : 'false',
-            'woocommerce' => $this->payload->woocommerce ? 'true' : 'false',
-            'wordpressseo' => $this->payload->wordpressSeo ? 'true' : 'false',
+            'is_subdomain_multisite' => $this->payload->isSubdomainMultisite,
+            'is_multisite' => $this->payload->isMultisite,
         ];
+
+        // Deprecated by Kinsta; only sent when explicitly enabled.
+        if ($this->payload->woocommerce) {
+            $body['woocommerce'] = true;
+        }
+
+        if ($this->payload->wordpressSeo) {
+            $body['wordpressseo'] = true;
+        }
+
+        return $body;
     }
 
     public function createDtoFromResponse(Response $response): mixed

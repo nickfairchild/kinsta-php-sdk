@@ -10,13 +10,14 @@ use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Sites\GetSitesRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Sites\ResetSiteRequest;
 use Saloon\Http\Faking\MockClient;
 use Saloon\Http\Faking\MockResponse;
+use Saloon\Http\Request;
 
 beforeEach(function () {
     $this->kinsta = kinstaMock();
 });
 
 it('can get all sites', function () {
-    MockClient::global([
+    $mockClient = MockClient::global([
         GetSitesRequest::class => MockResponse::make([
             'company' => [
                 'sites' => [
@@ -35,6 +36,20 @@ it('can get all sites', function () {
     $sites = $this->kinsta->sites(false);
 
     expect($sites)->toBeArray()->toHaveCount(1);
+
+    $mockClient->assertSent(fn (Request $request) => $request->resolveEndpoint() === '/sites'
+        && $request->query()->get('company') === 'company-id'
+        && $request->query()->get('include_environments') === 'false');
+});
+
+it('omits include_environments when not set', function () {
+    $mockClient = MockClient::global([
+        GetSitesRequest::class => MockResponse::make(['company' => ['sites' => []]]),
+    ]);
+
+    $this->kinsta->sites();
+
+    $mockClient->assertSent(fn (Request $request) => $request->query()->get('include_environments') === null);
 });
 
 it('can get a single site', function () {
@@ -44,7 +59,9 @@ it('can get a single site', function () {
                 'id' => 'site-123',
                 'name' => 'my-wp-site',
                 'display_name' => 'My WordPress Site',
+                'company_id' => 'company-id',
                 'status' => 'live',
+                'siteLabels' => [['id' => 'label-1', 'name' => 'Client']],
                 'environments' => [],
             ],
         ]),
@@ -55,15 +72,19 @@ it('can get a single site', function () {
     expect($site->id)->toBe('site-123')
         ->and($site->name)->toBe('my-wp-site')
         ->and($site->displayName)->toBe('My WordPress Site')
-        ->and($site->status)->toBe('live');
+        ->and($site->status)->toBe('live')
+        ->and($site->companyId)->toBe('company-id')
+        ->and($site->siteLabels)->toBe([['id' => 'label-1', 'name' => 'Client']]);
 });
 
 it('can create a WordPress site', function () {
-    MockClient::global([
+    $mockClient = MockClient::global([
         CreateSiteRequest::class => MockResponse::make([
             'message' => 'Successfully finished request',
-            'status' => 200,
+            'status' => 202,
             'operation_id' => 'create-site-123',
+            'support_reference_id' => 12345,
+            'warning' => 'Some plugins could not be installed.',
         ]),
     ]);
 
@@ -81,8 +102,23 @@ it('can create a WordPress site', function () {
     $response = $this->kinsta->createSite($payload);
 
     expect($response->message)->toBe('Successfully finished request')
-        ->and($response->status)->toBe(200)
-        ->and($response->operationId)->toBe('create-site-123');
+        ->and($response->status)->toBe(202)
+        ->and($response->operationId)->toBe('create-site-123')
+        ->and($response->supportReferenceId)->toBe(12345)
+        ->and($response->warning)->toBe('Some plugins could not be installed.');
+
+    $mockClient->assertSent(function (Request $request) {
+        $body = $request->body()->all();
+
+        return $request->getMethod()->value === 'POST'
+            && $request->resolveEndpoint() === '/sites'
+            && $body['install_mode'] === 'new'
+            && $body['company'] === 'company-id'
+            && $body['is_multisite'] === false
+            && $body['is_subdomain_multisite'] === false
+            && ! array_key_exists('woocommerce', $body)
+            && ! array_key_exists('wordpressseo', $body);
+    });
 });
 
 it('can create a plain site', function () {
@@ -134,10 +170,10 @@ it('can delete a site', function () {
 });
 
 it('can reset a site', function () {
-    MockClient::global([
+    $mockClient = MockClient::global([
         ResetSiteRequest::class => MockResponse::make([
             'message' => 'Successfully finished request',
-            'status' => 200,
+            'status' => 202,
             'operation_id' => 'reset-site-123',
         ]),
     ]);
@@ -145,6 +181,10 @@ it('can reset a site', function () {
     $response = $this->kinsta->resetSite('site-123', 'newpassword123');
 
     expect($response->message)->toBe('Successfully finished request')
-        ->and($response->status)->toBe(200)
+        ->and($response->status)->toBe(202)
         ->and($response->operationId)->toBe('reset-site-123');
+
+    $mockClient->assertSent(fn (Request $request) => $request->getMethod()->value === 'POST'
+        && $request->resolveEndpoint() === '/sites/site-123/reset-site'
+        && $request->body()->all() === ['admin_password' => 'newpassword123']);
 });

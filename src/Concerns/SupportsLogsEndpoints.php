@@ -5,7 +5,8 @@ namespace Nickfairchild\KinstaPhpSdk\Concerns;
 use Nickfairchild\KinstaPhpSdk\Dto\Logs\LogsQuery;
 use Nickfairchild\KinstaPhpSdk\Dto\Logs\LogsResult;
 use Nickfairchild\KinstaPhpSdk\Dto\Logs\RedirectRules;
-use Nickfairchild\KinstaPhpSdk\Dto\OperationResponse;
+use Nickfairchild\KinstaPhpSdk\Dto\Logs\RedirectRulesQuery;
+use Nickfairchild\KinstaPhpSdk\Dto\Logs\RedirectRulesUpdateData;
 use Nickfairchild\KinstaPhpSdk\Kinsta;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Logs\GetLogsRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Logs\GetRedirectRulesRequest;
@@ -21,16 +22,16 @@ trait SupportsLogsEndpoints
         return $this->send($request)->dto();
     }
 
-    public function getRedirectRules(string $envId): RedirectRules
+    public function getRedirectRules(string $envId, ?RedirectRulesQuery $query = null): RedirectRules
     {
-        $request = new GetRedirectRulesRequest($envId);
+        $request = new GetRedirectRulesRequest($envId, $query);
 
         return $this->send($request)->dto();
     }
 
-    public function updateRedirectRules(string $envId, array $rules): OperationResponse
+    public function updateRedirectRules(string $envId, RedirectRulesUpdateData $data): bool
     {
-        $request = new UpdateRedirectRulesRequest($envId, $rules);
+        $request = new UpdateRedirectRulesRequest($envId, $data);
 
         return $this->send($request)->dto();
     }

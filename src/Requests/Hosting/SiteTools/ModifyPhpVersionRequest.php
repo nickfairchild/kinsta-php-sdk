@@ -18,6 +18,7 @@ class ModifyPhpVersionRequest extends Request implements HasBody
     public function __construct(
         protected string $envId,
         protected string $phpVersion,
+        protected ?bool $optOutFromAutomaticPhpUpdate = null,
     ) {}
 
     public function resolveEndpoint(): string
@@ -27,10 +28,11 @@ class ModifyPhpVersionRequest extends Request implements HasBody
 
     protected function defaultBody(): array
     {
-        return [
+        return array_filter([
             'environment_id' => $this->envId,
             'php_version' => $this->phpVersion,
-        ];
+            'is_opt_out_from_automatic_php_update' => $this->optOutFromAutomaticPhpUpdate,
+        ], fn ($value) => $value !== null);
     }
 
     public function createDtoFromResponse(Response $response): mixed

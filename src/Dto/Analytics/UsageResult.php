@@ -5,15 +5,15 @@ namespace Nickfairchild\KinstaPhpSdk\Dto\Analytics;
 readonly class UsageResult
 {
     public function __construct(
-        public int $value,
-        public string $unit,
+        public string $siteId,
+        public int|float $value,
     ) {}
 
-    public static function fromResponse(array $data): self
+    public static function fromResponse(array $site, string $usageKey, string $metric): self
     {
         return new self(
-            value: $data['value'] ?? 0,
-            unit: $data['unit'] ?? '',
+            siteId: $site['id'],
+            value: $site[$usageKey][$metric] ?? 0,
         );
     }
 }

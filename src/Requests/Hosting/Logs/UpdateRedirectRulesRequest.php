@@ -2,7 +2,7 @@
 
 namespace Nickfairchild\KinstaPhpSdk\Requests\Hosting\Logs;
 
-use Nickfairchild\KinstaPhpSdk\Dto\OperationResponse;
+use Nickfairchild\KinstaPhpSdk\Dto\Logs\RedirectRulesUpdateData;
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
@@ -17,7 +17,7 @@ class UpdateRedirectRulesRequest extends Request implements HasBody
 
     public function __construct(
         protected string $envId,
-        protected array $rules,
+        protected RedirectRulesUpdateData $data,
     ) {}
 
     public function resolveEndpoint(): string
@@ -27,13 +27,15 @@ class UpdateRedirectRulesRequest extends Request implements HasBody
 
     protected function defaultBody(): array
     {
-        return [
-            'redirect_rules' => $this->rules,
-        ];
+        return array_filter([
+            'action_type' => $this->data->actionType,
+            'rules_to_update' => $this->data->rulesToUpdate,
+            'new_value' => $this->data->newValue,
+        ], fn ($value) => $value !== null);
     }
 
     public function createDtoFromResponse(Response $response): mixed
     {
-        return OperationResponse::fromResponse($response);
+        return $response->successful();
     }
 }

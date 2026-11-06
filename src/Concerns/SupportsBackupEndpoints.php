@@ -5,12 +5,15 @@ namespace Nickfairchild\KinstaPhpSdk\Concerns;
 use Nickfairchild\KinstaPhpSdk\Dto\Hosting\Backups\AddManualBackupRequestData;
 use Nickfairchild\KinstaPhpSdk\Dto\Hosting\Backups\BackupEnvironment;
 use Nickfairchild\KinstaPhpSdk\Dto\Hosting\Backups\DownloadableBackupEnvironment;
+use Nickfairchild\KinstaPhpSdk\Dto\Hosting\Backups\NextDownloadableBackup;
 use Nickfairchild\KinstaPhpSdk\Dto\Hosting\Backups\RestoreBackupRequestData;
 use Nickfairchild\KinstaPhpSdk\Dto\OperationResponse;
 use Nickfairchild\KinstaPhpSdk\Kinsta;
+use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Backups\AddDownloadableBackupRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Backups\AddManualBackupRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Backups\GetBackupsRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Backups\GetDownloadableBackupsRequest;
+use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Backups\GetNextDownloadableBackupAvailableRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Backups\RemoveBackupRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Backups\RestoreBackupRequest;
 
@@ -27,6 +30,20 @@ trait SupportsBackupEndpoints
     public function downloadableBackups(string $envId): DownloadableBackupEnvironment
     {
         $request = new GetDownloadableBackupsRequest($envId);
+
+        return $this->send($request)->dto();
+    }
+
+    public function addDownloadableBackup(string $envId): OperationResponse
+    {
+        $request = new AddDownloadableBackupRequest($envId);
+
+        return $this->send($request)->dto();
+    }
+
+    public function nextDownloadableBackupAvailable(string $envId): NextDownloadableBackup
+    {
+        $request = new GetNextDownloadableBackupAvailableRequest($envId);
 
         return $this->send($request)->dto();
     }

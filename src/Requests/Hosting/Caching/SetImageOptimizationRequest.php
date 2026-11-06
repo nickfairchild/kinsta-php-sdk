@@ -13,11 +13,11 @@ class SetImageOptimizationRequest extends Request implements HasBody
 {
     use HasJsonBody;
 
-    protected Method $method = Method::POST;
+    protected Method $method = Method::PUT;
 
     public function __construct(
-        protected string $siteId,
-        protected bool $enabled,
+        protected string $envId,
+        protected string $type,
     ) {}
 
     public function resolveEndpoint(): string
@@ -28,8 +28,8 @@ class SetImageOptimizationRequest extends Request implements HasBody
     protected function defaultBody(): array
     {
         return [
-            'site_id' => $this->siteId,
-            'enabled' => $this->enabled ? 'true' : 'false',
+            'environment_id' => $this->envId,
+            'image_optimization_type' => $this->type,
         ];
     }
 

@@ -28,10 +28,12 @@ class AddAdditionalSftpAccountRequest extends Request implements HasBody
 
     protected function defaultBody(): array
     {
-        return [
+        return array_filter([
             'username' => $this->data->username,
             'password' => $this->data->password,
-        ];
+            'root_directory' => $this->data->rootDirectory,
+            'permission' => $this->data->permission,
+        ], fn ($value) => $value !== null);
     }
 
     public function createDtoFromResponse(Response $response): mixed

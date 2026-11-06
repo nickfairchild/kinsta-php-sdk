@@ -28,10 +28,17 @@ class CreateEnvironmentRequest extends Request implements HasBody
 
     protected function defaultBody(): array
     {
-        return [
+        return array_filter([
             'display_name' => $this->data->displayName,
-            'env_type' => $this->data->envType,
-        ];
+            'site_title' => $this->data->siteTitle,
+            'is_premium' => $this->data->isPremium,
+            'admin_email' => $this->data->adminEmail,
+            'admin_password' => $this->data->adminPassword,
+            'admin_user' => $this->data->adminUser,
+            'wp_language' => $this->data->wpLanguage,
+            'is_subdomain_multisite' => $this->data->isSubdomainMultisite,
+            'is_multisite' => $this->data->isMultisite,
+        ], fn ($value) => $value !== null);
     }
 
     public function createDtoFromResponse(Response $response): mixed

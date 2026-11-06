@@ -13,11 +13,12 @@ class ChangePrimaryDomainRequest extends Request implements HasBody
 {
     use HasJsonBody;
 
-    protected Method $method = Method::POST;
+    protected Method $method = Method::PUT;
 
     public function __construct(
         protected string $envId,
         protected string $domainId,
+        protected bool $runSearchAndReplace = true,
     ) {}
 
     public function resolveEndpoint(): string
@@ -28,7 +29,8 @@ class ChangePrimaryDomainRequest extends Request implements HasBody
     protected function defaultBody(): array
     {
         return [
-            'site_domain_id' => $this->domainId,
+            'domain_id' => $this->domainId,
+            'run_search_and_replace' => $this->runSearchAndReplace,
         ];
     }
 

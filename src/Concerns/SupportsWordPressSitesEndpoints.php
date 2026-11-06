@@ -17,7 +17,7 @@ use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Sites\ResetSiteRequest;
 /** @mixin Kinsta */
 trait SupportsWordPressSitesEndpoints
 {
-    public function sites(?bool $includeEnvironments): array
+    public function sites(?bool $includeEnvironments = null): array
     {
         $request = new GetSitesRequest($this->companyId, $includeEnvironments);
 

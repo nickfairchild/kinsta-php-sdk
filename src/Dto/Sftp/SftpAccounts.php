@@ -6,6 +6,7 @@ readonly class SftpAccounts
 {
     public function __construct(
         public array $accounts,
+        public ?string $port = null,
     ) {}
 
     public static function fromResponse(array $data): self
@@ -15,6 +16,7 @@ readonly class SftpAccounts
                 fn (array $acc) => SftpAccount::fromResponse($acc),
                 $data['additional_sftp_accounts'] ?? [],
             ),
+            port: $data['container_info']['additional_sftp_accounts_port'] ?? null,
         );
     }
 }

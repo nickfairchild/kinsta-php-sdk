@@ -12,8 +12,8 @@ readonly class FileListResult
     public static function fromResponse(array $data): self
     {
         return new self(
-            environmentId: $data['environment_id'],
-            files: $data['files'] ?? [],
+            environmentId: $data['environment']['id'],
+            files: $data['environment']['file_list'] ?? [],
         );
     }
 }

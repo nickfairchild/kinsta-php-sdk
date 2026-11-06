@@ -30,9 +30,9 @@ trait SupportsSiteDomainsEndpoints
         return $this->send($request)->dto();
     }
 
-    public function deleteSiteDomain(string $envId, string $domainId): OperationResponse
+    public function deleteSiteDomain(string $envId, string|array $domainIds): OperationResponse
     {
-        $request = new DeleteSiteDomainRequest($envId, $domainId);
+        $request = new DeleteSiteDomainRequest($envId, (array) $domainIds);
 
         return $this->send($request)->dto();
     }
@@ -44,9 +44,9 @@ trait SupportsSiteDomainsEndpoints
         return $this->send($request)->dto();
     }
 
-    public function changePrimaryDomain(string $envId, string $domainId): OperationResponse
+    public function changePrimaryDomain(string $envId, string $domainId, bool $runSearchAndReplace = true): OperationResponse
     {
-        $request = new ChangePrimaryDomainRequest($envId, $domainId);
+        $request = new ChangePrimaryDomainRequest($envId, $domainId, $runSearchAndReplace);
 
         return $this->send($request)->dto();
     }

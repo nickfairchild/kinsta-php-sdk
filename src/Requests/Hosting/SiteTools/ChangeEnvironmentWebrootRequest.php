@@ -18,6 +18,8 @@ class ChangeEnvironmentWebrootRequest extends Request implements HasBody
     public function __construct(
         protected string $envId,
         protected string $subfolder,
+        protected ?bool $clearAllCache = null,
+        protected ?bool $refreshPluginsAndThemes = null,
     ) {}
 
     public function resolveEndpoint(): string
@@ -27,9 +29,11 @@ class ChangeEnvironmentWebrootRequest extends Request implements HasBody
 
     protected function defaultBody(): array
     {
-        return [
-            'site_subfolder_path' => $this->subfolder,
-        ];
+        return array_filter([
+            'web_root_subfolder' => $this->subfolder,
+            'clear_all_cache' => $this->clearAllCache,
+            'refresh_plugins_and_themes' => $this->refreshPluginsAndThemes,
+        ], fn ($value) => $value !== null);
     }
 
     public function createDtoFromResponse(Response $response): mixed

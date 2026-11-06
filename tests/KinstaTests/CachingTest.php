@@ -4,6 +4,7 @@ use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Caching\ClearCdnCacheRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Caching\ClearEdgeCacheRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Caching\SetEdgeCacheStatusRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Caching\SetImageOptimizationRequest;
+use Saloon\Enums\Method;
 use Saloon\Http\Faking\MockClient;
 use Saloon\Http\Faking\MockResponse;
 
@@ -12,7 +13,7 @@ beforeEach(function () {
 });
 
 it('can clear edge cache', function () {
-    MockClient::global([
+    $mock = MockClient::global([
         ClearEdgeCacheRequest::class => MockResponse::make([
             'message' => 'Successfully finished request',
             'status' => 202,
@@ -20,14 +21,36 @@ it('can clear edge cache', function () {
         ]),
     ]);
 
-    $response = $this->kinsta->clearEdgeCache('site-123');
+    $response = $this->kinsta->clearEdgeCache('env-123', clearSubdirectories: true, url: 'https://example.com/blog');
 
     expect($response->message)->toBe('Successfully finished request')
         ->and($response->operationId)->toBe('clear-edge-123');
+
+    $mock->assertSent(fn ($request, $response) => $response->getPendingRequest()->getMethod() === Method::POST
+        && $response->getPendingRequest()->getUrl() === 'https://api.kinsta.com/v2/sites/edge-caching/clear'
+        && $response->getPendingRequest()->body()->all() === [
+            'environment_id' => 'env-123',
+            'clear_subdirectories' => true,
+            'url' => 'https://example.com/blog',
+        ]);
+});
+
+it('clears all edge cache when no URL is given', function () {
+    $mock = MockClient::global([
+        ClearEdgeCacheRequest::class => MockResponse::make([
+            'message' => 'Successfully finished request',
+            'status' => 202,
+            'operation_id' => 'clear-edge-123',
+        ]),
+    ]);
+
+    $this->kinsta->clearEdgeCache('env-123');
+
+    $mock->assertSent(fn ($request, $response) => $response->getPendingRequest()->body()->all() === ['environment_id' => 'env-123']);
 });
 
 it('can set edge cache status', function () {
-    MockClient::global([
+    $mock = MockClient::global([
         SetEdgeCacheStatusRequest::class => MockResponse::make([
             'message' => 'Successfully finished request',
             'status' => 202,
@@ -35,14 +58,18 @@ it('can set edge cache status', function () {
         ]),
     ]);
 
-    $response = $this->kinsta->setEdgeCacheStatus('site-123', true);
+    $response = $this->kinsta->setEdgeCacheStatus('env-123', true);
 
     expect($response->message)->toBe('Successfully finished request')
         ->and($response->operationId)->toBe('set-edge-status-123');
+
+    $mock->assertSent(fn ($request, $response) => $response->getPendingRequest()->getMethod() === Method::PUT
+        && $response->getPendingRequest()->getUrl() === 'https://api.kinsta.com/v2/sites/edge-caching/status'
+        && $response->getPendingRequest()->body()->all() === ['environment_id' => 'env-123', 'enabled' => true]);
 });
 
 it('can clear CDN cache', function () {
-    MockClient::global([
+    $mock = MockClient::global([
         ClearCdnCacheRequest::class => MockResponse::make([
             'message' => 'Successfully finished request',
             'status' => 202,
@@ -50,14 +77,18 @@ it('can clear CDN cache', function () {
         ]),
     ]);
 
-    $response = $this->kinsta->clearCdnCache('site-123');
+    $response = $this->kinsta->clearCdnCache('env-123', 'cdn-cache-123');
 
     expect($response->message)->toBe('Successfully finished request')
         ->and($response->operationId)->toBe('clear-cdn-123');
+
+    $mock->assertSent(fn ($request, $response) => $response->getPendingRequest()->getMethod() === Method::POST
+        && $response->getPendingRequest()->getUrl() === 'https://api.kinsta.com/v2/sites/cdn/clear-cache'
+        && $response->getPendingRequest()->body()->all() === ['environment_id' => 'env-123', 'cdn_cache_id' => 'cdn-cache-123']);
 });
 
 it('can set image optimization', function () {
-    MockClient::global([
+    $mock = MockClient::global([
         SetImageOptimizationRequest::class => MockResponse::make([
             'message' => 'Successfully finished request',
             'status' => 202,
@@ -65,8 +96,12 @@ it('can set image optimization', function () {
         ]),
     ]);
 
-    $response = $this->kinsta->setImageOptimization('site-123', true);
+    $response = $this->kinsta->setImageOptimization('env-123', 'lossy');
 
     expect($response->message)->toBe('Successfully finished request')
         ->and($response->operationId)->toBe('set-img-opt-123');
+
+    $mock->assertSent(fn ($request, $response) => $response->getPendingRequest()->getMethod() === Method::PUT
+        && $response->getPendingRequest()->getUrl() === 'https://api.kinsta.com/v2/sites/cdn/image-optimization'
+        && $response->getPendingRequest()->body()->all() === ['environment_id' => 'env-123', 'image_optimization_type' => 'lossy']);
 });

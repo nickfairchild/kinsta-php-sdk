@@ -2,7 +2,6 @@
 
 namespace Nickfairchild\KinstaPhpSdk\Concerns;
 
-use Nickfairchild\KinstaPhpSdk\Dto\OperationResponse;
 use Nickfairchild\KinstaPhpSdk\Dto\Tools\DeniedIpsResult;
 use Nickfairchild\KinstaPhpSdk\Kinsta;
 use Nickfairchild\KinstaPhpSdk\Requests\Hosting\AdditionalTools\GetDeniedIpsRequest;
@@ -18,7 +17,7 @@ trait SupportsAdditionalToolsEndpoints
         return $this->send($request)->dto();
     }
 
-    public function updateDeniedIps(string $envId, array $ips): OperationResponse
+    public function updateDeniedIps(string $envId, array $ips): bool
     {
         $request = new UpdateDeniedIpsRequest($envId, $ips);
 

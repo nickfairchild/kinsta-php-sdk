@@ -2,16 +2,18 @@
 
 namespace Nickfairchild\KinstaPhpSdk\Dto\WordPressTools;
 
-readonly class WpCliResult
+readonly class PhpMyAdminLink
 {
     public function __construct(
-        public string $output,
+        public string $url,
+        public int $expiresAt,
     ) {}
 
     public static function fromResponse(array $data): self
     {
         return new self(
-            output: $data['output'] ?? '',
+            url: $data['url'],
+            expiresAt: $data['expires_at'],
         );
     }
 }

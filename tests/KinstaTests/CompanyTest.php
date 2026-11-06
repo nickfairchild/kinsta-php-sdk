@@ -1,12 +1,17 @@
 <?php
 
 use Nickfairchild\KinstaPhpSdk\Dto\Company\PluginThemePayload;
+use Nickfairchild\KinstaPhpSdk\Dto\Company\SiteCapabilityData;
 use Nickfairchild\KinstaPhpSdk\Requests\Company\GetActivityLogsRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Company\GetAPIKeysRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Company\GetCompanyPluginsRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Company\GetCompanyThemesRequest;
+use Nickfairchild\KinstaPhpSdk\Requests\Company\GetCompanyUserRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Company\GetCompanyUsersRequest;
 use Nickfairchild\KinstaPhpSdk\Requests\Company\GetRegionsRequest;
+use Nickfairchild\KinstaPhpSdk\Requests\Company\SetCompanyCapabilityRequest;
+use Nickfairchild\KinstaPhpSdk\Requests\Company\SetSiteCapabilitiesRequest;
+use Saloon\Enums\Method;
 use Saloon\Http\Faking\MockClient;
 use Saloon\Http\Faking\MockResponse;
 
@@ -25,6 +30,16 @@ it('can get the company users', function () {
                             'email' => 'john@exapmle.com',
                             'image' => 'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50',
                             'full_name' => 'John Doe',
+                            'type_2fa' => 'email',
+                        ],
+                        'capabilities' => [
+                            [
+                                'id' => 'cap-1',
+                                'type' => 'company',
+                                'role' => 'company-admin',
+                                'company_id' => 'company-id',
+                                'site_id' => null,
+                            ],
                         ],
                     ],
                 ],
@@ -38,7 +53,11 @@ it('can get the company users', function () {
         expect($response->id)->toBeString()
             ->and($response->email)->toBeString()
             ->and($response->image)->toBeString()
-            ->and($response->fullName)->toBeString();
+            ->and($response->fullName)->toBeString()
+            ->and($response->type2fa)->toBe('email')
+            ->and($response->capabilities[0]->role)->toBe('company-admin')
+            ->and($response->capabilities[0]->companyId)->toBe('company-id')
+            ->and($response->capabilities[0]->siteId)->toBeNull();
     }
 });
 
@@ -248,4 +267,89 @@ it('can get a list of themes', function () {
         expect($item->name)->toBeString()
             ->and($item->title)->toBeString();
     }
+});
+
+it('can get a company user by id', function () {
+    MockClient::global([
+        GetCompanyUserRequest::class => MockResponse::make([
+            'company' => [
+                'user_by_id' => [
+                    'user' => [
+                        'id' => 'user-1',
+                        'email' => 'john@example.com',
+                        'full_name' => 'John Doe',
+                        'type_2fa' => null,
+                    ],
+                    'capabilities' => [
+                        [
+                            'role' => 'site-developer',
+                            'id_company' => null,
+                            'id_site' => 'site-1',
+                        ],
+                    ],
+                ],
+            ],
+        ]),
+    ]);
+
+    $response = $this->kinsta->companyUser('user-1');
+
+    MockClient::global()->assertSent(function (GetCompanyUserRequest $request) {
+        return $request->getMethod() === Method::GET
+            && $request->resolveEndpoint() === '/company/company-id/users/user-1';
+    });
+
+    expect($response->id)->toBe('user-1')
+        ->and($response->image)->toBeNull()
+        ->and($response->type2fa)->toBeNull()
+        ->and($response->capabilities[0]->role)->toBe('site-developer')
+        ->and($response->capabilities[0]->companyId)->toBeNull()
+        ->and($response->capabilities[0]->siteId)->toBe('site-1');
+});
+
+it('can set a company capability for a user', function () {
+    MockClient::global([
+        SetCompanyCapabilityRequest::class => MockResponse::make([
+            'operation_id' => 'op-1',
+            'message' => 'User capabilities updated',
+            'status' => 200,
+        ]),
+    ]);
+
+    $response = $this->kinsta->setCompanyCapability('user-1', 'company-developer');
+
+    MockClient::global()->assertSent(function (SetCompanyCapabilityRequest $request) {
+        return $request->getMethod() === Method::POST
+            && $request->resolveEndpoint() === '/company/company-id/users/company-capabilities'
+            && $request->body()->all() === ['user_id' => 'user-1', 'role' => 'company-developer'];
+    });
+
+    expect($response->operationId)->toBe('op-1')
+        ->and($response->status)->toBe(200);
+});
+
+it('can set site capabilities for users', function () {
+    MockClient::global([
+        SetSiteCapabilitiesRequest::class => MockResponse::make([
+            'operation_id' => 'op-2',
+            'message' => 'User capabilities updated',
+            'status' => 200,
+        ]),
+    ]);
+
+    $response = $this->kinsta->setSiteCapabilities(
+        ['user-1', 'user-2'],
+        [new SiteCapabilityData(siteId: 'site-1', role: 'site-admin')],
+    );
+
+    MockClient::global()->assertSent(function (SetSiteCapabilitiesRequest $request) {
+        return $request->getMethod() === Method::POST
+            && $request->resolveEndpoint() === '/company/company-id/users/site-capabilities'
+            && $request->body()->all() === [
+                'user_ids' => ['user-1', 'user-2'],
+                'site_capabilities' => [['site_id' => 'site-1', 'role' => 'site-admin']],
+            ];
+    });
+
+    expect($response->operationId)->toBe('op-2');
 });

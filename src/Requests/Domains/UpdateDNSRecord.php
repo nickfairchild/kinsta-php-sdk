@@ -14,7 +14,7 @@ class UpdateDNSRecord extends Request implements HasBody
 {
     use HasJsonBody;
 
-    protected Method $method = Method::PATCH;
+    protected Method $method = Method::PUT;
 
     public function __construct(
         protected string $domainId,

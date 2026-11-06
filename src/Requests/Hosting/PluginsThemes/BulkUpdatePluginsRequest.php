@@ -29,7 +29,10 @@ class BulkUpdatePluginsRequest extends Request implements HasBody
     protected function defaultBody(): array
     {
         return [
-            'plugin_slugs' => $this->data->pluginSlugs,
+            'plugins' => array_map(
+                fn (string $name) => ['name' => $name],
+                $this->data->plugins,
+            ),
         ];
     }
 

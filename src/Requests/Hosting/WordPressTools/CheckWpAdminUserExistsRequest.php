@@ -3,17 +3,13 @@
 namespace Nickfairchild\KinstaPhpSdk\Requests\Hosting\WordPressTools;
 
 use Nickfairchild\KinstaPhpSdk\Dto\WordPressTools\WpAdminUserResult;
-use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
-use Saloon\Traits\Body\HasJsonBody;
 
-class CheckWpAdminUserExistsRequest extends Request implements HasBody
+class CheckWpAdminUserExistsRequest extends Request
 {
-    use HasJsonBody;
-
-    protected Method $method = Method::POST;
+    protected Method $method = Method::GET;
 
     public function __construct(
         protected string $envId,
@@ -25,7 +21,7 @@ class CheckWpAdminUserExistsRequest extends Request implements HasBody
         return "/sites/environments/{$this->envId}/wpa-user-exists";
     }
 
-    protected function defaultBody(): array
+    protected function defaultQuery(): array
     {
         return [
             'email' => $this->email,

@@ -13,10 +13,10 @@ class SetEdgeCacheStatusRequest extends Request implements HasBody
 {
     use HasJsonBody;
 
-    protected Method $method = Method::POST;
+    protected Method $method = Method::PUT;
 
     public function __construct(
-        protected string $siteId,
+        protected string $envId,
         protected bool $enabled,
     ) {}
 
@@ -28,8 +28,8 @@ class SetEdgeCacheStatusRequest extends Request implements HasBody
     protected function defaultBody(): array
     {
         return [
-            'site_id' => $this->siteId,
-            'enabled' => $this->enabled ? 'true' : 'false',
+            'environment_id' => $this->envId,
+            'enabled' => $this->enabled,
         ];
     }
 

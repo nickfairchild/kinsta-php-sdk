@@ -12,30 +12,30 @@ use Nickfairchild\KinstaPhpSdk\Requests\Hosting\Caching\SetImageOptimizationRequ
 /** @mixin Kinsta */
 trait SupportsCachingEndpoints
 {
-    public function clearEdgeCache(string $siteId): OperationResponse
+    public function clearEdgeCache(string $envId, ?bool $clearSubdirectories = null, ?string $url = null): OperationResponse
     {
-        $request = new ClearEdgeCacheRequest($siteId);
+        $request = new ClearEdgeCacheRequest($envId, $clearSubdirectories, $url);
 
         return $this->send($request)->dto();
     }
 
-    public function setEdgeCacheStatus(string $siteId, bool $enabled): OperationResponse
+    public function setEdgeCacheStatus(string $envId, bool $enabled): OperationResponse
     {
-        $request = new SetEdgeCacheStatusRequest($siteId, $enabled);
+        $request = new SetEdgeCacheStatusRequest($envId, $enabled);
 
         return $this->send($request)->dto();
     }
 
-    public function clearCdnCache(string $siteId): OperationResponse
+    public function clearCdnCache(string $envId, string $cdnCacheId): OperationResponse
     {
-        $request = new ClearCdnCacheRequest($siteId);
+        $request = new ClearCdnCacheRequest($envId, $cdnCacheId);
 
         return $this->send($request)->dto();
     }
 
-    public function setImageOptimization(string $siteId, bool $enabled): OperationResponse
+    public function setImageOptimization(string $envId, string $type): OperationResponse
     {
-        $request = new SetImageOptimizationRequest($siteId, $enabled);
+        $request = new SetImageOptimizationRequest($envId, $type);
 
         return $this->send($request)->dto();
     }

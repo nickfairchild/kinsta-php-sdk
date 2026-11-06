@@ -2,7 +2,6 @@
 
 namespace Nickfairchild\KinstaPhpSdk\Requests\Hosting\Sftp;
 
-use Nickfairchild\KinstaPhpSdk\Dto\OperationResponse;
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
@@ -17,7 +16,7 @@ class ChangeSftpPasswordExpirationRequest extends Request implements HasBody
 
     public function __construct(
         protected string $envId,
-        protected int $interval,
+        protected string $interval,
     ) {}
 
     public function resolveEndpoint(): string
@@ -28,12 +27,12 @@ class ChangeSftpPasswordExpirationRequest extends Request implements HasBody
     protected function defaultBody(): array
     {
         return [
-            'expiration_interval' => $this->interval,
+            'exp_interval' => $this->interval,
         ];
     }
 
     public function createDtoFromResponse(Response $response): mixed
     {
-        return OperationResponse::fromResponse($response);
+        return $response->successful();
     }
 }

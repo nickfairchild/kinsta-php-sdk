@@ -7,3 +7,5 @@ composer.lock
 .AppleDouble
 .LSOverride
 ._*
+/.claude
+/kinsta.php

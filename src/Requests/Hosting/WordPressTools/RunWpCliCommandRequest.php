@@ -2,7 +2,7 @@
 
 namespace Nickfairchild\KinstaPhpSdk\Requests\Hosting\WordPressTools;
 
-use Nickfairchild\KinstaPhpSdk\Dto\WordPressTools\WpCliResult;
+use Nickfairchild\KinstaPhpSdk\Dto\OperationResponse;
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
@@ -34,6 +34,6 @@ class RunWpCliCommandRequest extends Request implements HasBody
 
     public function createDtoFromResponse(Response $response): mixed
     {
-        return WpCliResult::fromResponse($response->json());
+        return OperationResponse::fromResponse($response);
     }
 }

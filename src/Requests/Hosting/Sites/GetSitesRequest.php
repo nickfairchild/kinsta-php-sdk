@@ -13,7 +13,7 @@ class GetSitesRequest extends Request
 
     public function __construct(
         public string $companyId,
-        public bool $includeEnvironments,
+        public ?bool $includeEnvironments = null,
     ) {}
 
     public function resolveEndpoint(): string
@@ -23,16 +23,19 @@ class GetSitesRequest extends Request
 
     protected function defaultQuery(): array
     {
-        return [
+        $query = [
             'company' => $this->companyId,
-            'include_environments' => $this->includeEnvironments ? 'true' : 'false',
         ];
+
+        if ($this->includeEnvironments !== null) {
+            $query['include_environments'] = $this->includeEnvironments ? 'true' : 'false';
+        }
+
+        return $query;
     }
 
     public function createDtoFromResponse(Response $response): mixed
     {
-        return array_map(function (array $data) {
-            return Site::fromArray($data);
-        }, $response->json('company.sites'));
+        return Site::collect($response->json('company.sites'));
     }
 }

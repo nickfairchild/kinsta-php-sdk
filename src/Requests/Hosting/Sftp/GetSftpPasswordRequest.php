@@ -3,17 +3,13 @@
 namespace Nickfairchild\KinstaPhpSdk\Requests\Hosting\Sftp;
 
 use Nickfairchild\KinstaPhpSdk\Dto\Sftp\SftpPassword;
-use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
-use Saloon\Traits\Body\HasJsonBody;
 
-class GetSftpPasswordRequest extends Request implements HasBody
+class GetSftpPasswordRequest extends Request
 {
-    use HasJsonBody;
-
-    protected Method $method = Method::POST;
+    protected Method $method = Method::GET;
 
     public function __construct(protected string $envId) {}
 
@@ -24,6 +20,6 @@ class GetSftpPasswordRequest extends Request implements HasBody
 
     public function createDtoFromResponse(Response $response): mixed
     {
-        return SftpPassword::fromResponse($response->json());
+        return SftpPassword::fromResponse($response->json('environment'));
     }
 }

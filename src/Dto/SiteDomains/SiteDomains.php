@@ -11,7 +11,7 @@ readonly class SiteDomains
     public static function fromResponse(array $data): self
     {
         return new self(
-            domains: $data['site_domains'] ?? [],
+            domains: $data['environment']['site_domains'] ?? [],
         );
     }
 }

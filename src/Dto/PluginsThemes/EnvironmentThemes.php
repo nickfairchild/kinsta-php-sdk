@@ -11,7 +11,7 @@ readonly class EnvironmentThemes
     public static function fromResponse(array $data): self
     {
         return new self(
-            themes: $data['themes'] ?? [],
+            themes: $data['environment']['container_info']['wp_themes']['data'] ?? [],
         );
     }
 }

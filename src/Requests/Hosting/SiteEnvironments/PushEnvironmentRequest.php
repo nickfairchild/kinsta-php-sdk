@@ -28,10 +28,15 @@ class PushEnvironmentRequest extends Request implements HasBody
 
     protected function defaultBody(): array
     {
-        return [
+        return array_filter([
             'source_env_id' => $this->data->sourceEnvId,
             'target_env_id' => $this->data->targetEnvId,
-        ];
+            'push_db' => $this->data->pushDb,
+            'push_files' => $this->data->pushFiles,
+            'run_search_and_replace' => $this->data->runSearchAndReplace,
+            'push_files_option' => $this->data->pushFilesOption,
+            'file_list' => $this->data->fileList,
+        ], fn ($value) => $value !== null);
     }
 
     public function createDtoFromResponse(Response $response): mixed

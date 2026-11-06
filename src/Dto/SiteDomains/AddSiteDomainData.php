@@ -6,6 +6,10 @@ readonly class AddSiteDomainData
 {
     public function __construct(
         public string $domain,
-        public ?bool $isPrimary = null,
+        public ?bool $isWildcardless = null,
+        public ?bool $addWithWwwSubdomain = null,
+        public ?string $setupType = null,
+        public ?string $customSslKey = null,
+        public ?string $customSslCert = null,
     ) {}
 }

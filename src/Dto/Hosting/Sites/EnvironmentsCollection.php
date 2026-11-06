@@ -12,7 +12,7 @@ readonly class EnvironmentsCollection
     {
         return new self(
             environments: array_map(
-                fn (array $env) => Environment::fromArray($env),
+                fn (array $env) => Environment::fromResponse($env),
                 $data['environments'] ?? [],
             ),
         );
